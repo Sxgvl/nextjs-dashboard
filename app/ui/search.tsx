@@ -13,6 +13,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
     console.log(`Searching... ${term}`);
     // Web API that provides utility methods for manipulating the URL query parameters.
     const params = new URLSearchParams(searchParams);
+    params.set('page', '1'); // when the user types a new search query, you want to reset the page number to 1.
     if (term) {
       params.set('query', term);
     } else {
