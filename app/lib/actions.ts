@@ -15,7 +15,7 @@ const FormSchema = z.object({
    
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 
-export async function createInvoice(formData: FormData) {
+export async function createInvoice(formData: FormData): Promise<void> {
     const { customerId, amount, status } = CreateInvoice.parse({
         customerId: formData.get('customerId'),
         amount: formData.get('amount'),
@@ -32,9 +32,7 @@ export async function createInvoice(formData: FormData) {
           VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
         `;
     } catch (error) {
-        return {
-          message: 'Database Error: Failed to Create Invoice.',
-        };
+        throw new Error('Database Error: Failed to Create Invoice.');
     }
     // want to clear this cache and trigger a new request to the server, bcz we're updating the data displayed in the invoices route
     revalidatePath('/dashboard/invoices');
@@ -45,7 +43,7 @@ export async function createInvoice(formData: FormData) {
 // Use Zod to update the expected types
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
  
-export async function updateInvoice(id: string, formData: FormData) {
+export async function updateInvoice(id: string, formData: FormData): Promise<void> {
   const { customerId, amount, status } = UpdateInvoice.parse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
@@ -61,7 +59,7 @@ export async function updateInvoice(id: string, formData: FormData) {
         WHERE id = ${id}
       `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' };
+    throw new Error('Database Error: Failed to Update Invoice.');
   }
  
   revalidatePath('/dashboard/invoices');
