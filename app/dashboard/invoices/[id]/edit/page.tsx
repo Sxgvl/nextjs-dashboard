@@ -1,6 +1,7 @@
 import Form from '@/app/ui/invoices/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+import { notFound } from 'next/navigation';
  
 export default async function Page(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
@@ -9,6 +10,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         fetchInvoiceById(id),
         fetchCustomers(),
     ]);
+
+    if (!invoice) {
+        // show a 404 error to tell the user the resource they're trying to access hasn't been found
+        notFound();
+    }
 
   return (
     <main>
